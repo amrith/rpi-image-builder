@@ -1,0 +1,24 @@
+Building images
+
+To build images, you will need the disk image builder (DIB) tool. The
+tool is available on many platforms but at the time of writing this,
+these elements depend on fixes and features in DIB that have not yet
+been released. Therefore it is advised that you install DIB from
+source.
+
+On your average Linux machine, you should be able to use these
+elements after this minimal setup.
+
+sudo apt-get update
+sudo apt-get install -y qemu-user-static debootstrap curl kpartx
+
+mkdir -p /opt/stack
+cd /opt/stack
+git clone http://git.openstack.org/openstack/disk-image-builder
+
+cd disk-image-builder
+sudo python ./setup.py install
+
+Once you are done with that setup, you can follow the instructions in
+the rpi-generic element (see README.txt in that element) for a simple
+usage example.

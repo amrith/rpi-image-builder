@@ -1,0 +1,32 @@
+Extending elements
+
+If you find issues with these elements, please feel free to let me
+know, or submit patches and I'll do my best to incorporate them.
+
+If you would like to create your own elements which can build on top
+of these, it is as easy as writing and publishing your own elements
+(on your github).
+
+Users can then clone the elements they want, setup the ELEMENTS_PATH
+on their machine appropriately and build a composite image based on
+elements from many contributors.
+
+For example, a person who clones these repositories would have
+something like this:
+
+-+- rpi-image-builder/elements
+ |
+ +- bobs-elements/elements
+ |
+ += freds-elements/elements
+
+The user could now setup:
+
+ELEMENTS_PATH=./rpi-image-builder/elements:bobs-elements/elements:freds-elements/elements
+
+And then execute a disk-image-create command referencing elements in
+all three locations.
+
+Optionally, if freds elements included element-deps that defined a
+dependency on an element in bobs-elements, disk-image-create will
+resolve that for you.
