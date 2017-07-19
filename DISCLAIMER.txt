@@ -1,0 +1,11 @@
+DISCLAIMER
+
+This is free software which comes with absolutely no warranty of any
+kind, and no guarantees of suitablity for any specific application.
+
+Your use of this software is entirely your own choice, and you do so
+at your own peril. In using this software, you assume all liability
+for any damages that may result from its use.
+
+The author assumes no liabilities whatsoever for any issues,
+complications, or loss that may arise from the use of this software.
