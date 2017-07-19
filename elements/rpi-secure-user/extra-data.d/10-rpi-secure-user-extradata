@@ -21,10 +21,17 @@ if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
 _MYPATH=$(dirname $0)
 
-[ -e ~/.ssh/id_rsa.pub ]
-
 TMP_PATH=${TMP_HOOKS_PATH}/rpi-extradata
 mkdir -p ${TMP_PATH}
 
 cp -v ${_MYPATH}/files/* ${TMP_PATH}
-cp -v ~/.ssh/id_rsa.pub ${TMP_PATH}/authorized_keys
+
+# if the user running this has an authorized_keys file, use that and
+# if that doesn't, use the users public key.
+if [ -e ~/.ssh/authorized_keys ]; then
+    cp -v ~/.ssh/authorized_keys ${TMP_PATH}/authorized_keys
+else
+    [ -e ~/.ssh/id_rsa.pub ]
+
+    cp -v ~/.ssh/id_rsa.pub ${TMP_PATH}/authorized_keys
+fi

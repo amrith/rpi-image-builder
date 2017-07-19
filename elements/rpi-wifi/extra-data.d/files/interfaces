@@ -11,6 +11,14 @@ iface lo inet loopback
 auto eth0
 iface eth0 inet dhcp
 
+#
+# To recreate this file, change the wpa-ssid and wpa-psk to match your
+# network. The preshared key is encrypted. To get the encrypted PSK,
+# you can use the wpa_passphrase command.
+# wpa_passphrase <ssid> <plain-text-preshared-key>
+# this will give you the encrypted PSK.
+#
+
 auto wlan0
 iface wlan0 inet dhcp
    wpa-ssid SSID
