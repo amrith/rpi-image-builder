@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# Copyright Amrith Kumar, 2017
+#
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+
+#
+# This element cannot pre-configure ZNC as it does not support a nice
+# unattended configuration process.
+#
+# Instead, once the machine is up and running, you can run:
+#
+# sudo -u znc /usr/bin/znc --datadir=/var/lib/znc --makeconf
+# echo "PidFile = /var/run/znc/znc.pid" | sudo su - znc -s /bin/bash -c "tee -a /var/lib/znc/configs/znc.conf"
+#
+# and then start the service
+#
+# systemctl enable znc
+# systemctl start znc
+#
+# Source: https://wiki.znc.in/Running_ZNC_as_a_system_daemon
+#
+
+if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+
+TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
+
+[ -d ${TMP_HOOKS_DIR} ]
+
+_FNAME="znc.service"
+
+[ -f ${TMP_HOOKS_DIR}/${_FNAME} ]
+
+install -m 644 ${TMP_HOOKS_DIR}/${_FNAME} /etc/systemd/system/znc.service
+systemctl disable ${_FNAME}

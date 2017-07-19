@@ -1,0 +1,2 @@
+# raspberry-pi.list configured by rpi-base element
+deb http://archive.raspberrypi.org/debian/ ${DIB_DISTRO_NAME} main ui staging

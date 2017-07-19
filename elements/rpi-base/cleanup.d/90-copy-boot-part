@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+# Copyright Amrith Kumar, 2017
+#
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+
+if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+
+# find the loopback device that dib is using for this image
+if [ -z ${TMP_IMAGE_DIR} ]; then
+    exit 0
+fi
+
+LOOPDEVICE=$(sudo losetup | grep ${TMP_IMAGE_DIR} | awk '{print $1}')
+if [ -z ${LOOPDEVICE} ]; then
+    exit 0
+fi
+
+sudo sync
+
+#
+# because of ext4's delayed allocation, you have got to sync here
+# to ensure that the file backing the loopback device is properly
+# flushed.
+#
+
+BOOT_O=$(sudo parted ${LOOPDEVICE} unit b print | grep '^ 1' | awk '{print $2}' | sed 's/B$//')
+ROOT_O=$(sudo parted ${LOOPDEVICE} unit b print | grep '^ 2' | awk '{print $2}' | sed 's/B$//')
+
+BOOTDEVICE=$(sudo losetup --show -o ${BOOT_O} -f ${LOOPDEVICE})
+ROOTDEVICE=$(sudo losetup --show -o ${ROOT_O} -f ${LOOPDEVICE})
+
+ROOTDIR=$(sudo mktemp -d)
+BOOTDIR=$(sudo mktemp -d)
+
+sudo mount ${BOOTDEVICE} ${BOOTDIR}
+sudo mount ${ROOTDEVICE} ${ROOTDIR}
+
+sudo cp -R ${ROOTDIR}/boot/* ${BOOTDIR}/
+
+sudo sync
+
+ls -l ${BOOTDIR}/
+ls -l ${ROOTDIR}/
+
+[ -e ${BOOTDIR}/cmdline.txt ]
+if [ ! -s ${BOOTDIR}/cmdline.txt ]; then
+    exit 1
+fi
+
+[ -e ${BOOTDIR}/config.txt ]
+if [ ! -s ${BOOTDIR}/config.txt ]; then
+    exit 1
+fi
+
+sudo umount ${BOOTDIR}
+sudo umount ${ROOTDIR}
+
+sudo losetup -d ${BOOTDEVICE}
+sudo losetup -d ${ROOTDEVICE}
+
+sudo rm -rf ${BOOTDIR} ${ROOTDIR}

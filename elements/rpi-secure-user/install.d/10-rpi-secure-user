@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# Copyright Amrith Kumar, 2017
+#
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+
+if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+
+TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
+
+[ -d ${TMP_HOOKS_DIR} ]
+[ -f ${TMP_HOOKS_DIR}/sshd_config ]
+[ -f ${TMP_HOOKS_DIR}/sudoers ]
+[ -f ${TMP_HOOKS_DIR}/authorized_keys ]
+
+CMD="s/USERNAME/${RPI_SECURE_USER_NAME}/"
+
+echo "Found secure user name: ${RPI_SECURE_USER_NAME}"
+
+cat ${TMP_HOOKS_DIR}/sshd_config | sed ${CMD} > /tmp/sshd_config
+cat ${TMP_HOOKS_DIR}/sudoers | sed ${CMD} > /tmp/sudoers
+
+cat /tmp/sshd_config >> /etc/ssh/sshd_config
+
+mkdir -p /home
+
+useradd -d /home/${RPI_SECURE_USER_NAME} -m -s /bin/bash ${RPI_SECURE_USER_NAME}
+echo "${RPI_SECURE_USER_NAME}:${RPI_SECURE_USER_NAME}" | chpasswd
+
+chown ${RPI_SECURE_USER_NAME}:${RPI_SECURE_USER_NAME} /home/${RPI_SECURE_USER_NAME}
+
+install -m 644 /tmp/sudoers /etc/sudoers.d/10-${RPI_SECURE_USER_NAME}
+
+mkdir /home/${RPI_SECURE_USER_NAME}/.ssh/
+chown ${RPI_SECURE_USER_NAME}:${RPI_SECURE_USER_NAME} /home/${RPI_SECURE_USER_NAME}/.ssh
+
+cp ${TMP_HOOKS_DIR}/authorized_keys /home/${RPI_SECURE_USER_NAME}/.ssh/authorized_keys
+chmod 644 /home/${RPI_SECURE_USER_NAME}/.ssh/authorized_keys
+chown ${RPI_SECURE_USER_NAME}:${RPI_SECURE_USER_NAME} /home/${RPI_SECURE_USER_NAME}/.ssh/authorized_keys
+
+ls -l /home/${RPI_SECURE_USER_NAME}/.ssh/authorized_keys
+
+[ -f /home/${RPI_SECURE_USER_NAME}/.ssh/authorized_keys ]

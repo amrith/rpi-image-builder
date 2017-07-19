@@ -1,0 +1,119 @@
+#!/bin/bash
+#
+# Copyright Amrith Kumar, 2017
+#
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+
+if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+
+TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
+
+[ -d ${TMP_HOOKS_DIR} ]
+
+sed 's/${DIB_DISTRO_NAME}/'${DIB_DISTRO_NAME}'/g' ${TMP_HOOKS_DIR}/sources.list > /tmp/sources.list
+sed 's/${DIB_DISTRO_NAME}/'${DIB_DISTRO_NAME}'/g' ${TMP_HOOKS_DIR}/raspberry-pi.list > /tmp/raspberry-pi.list
+
+cat /tmp/sources.list >> /etc/apt/sources.list
+cat /tmp/raspberry-pi.list >> /etc/apt/sources.list.d/raspberry-pi.list
+
+apt-get install -y gpg
+
+apt-key add ${TMP_HOOKS_DIR}/rpi.gpg.key
+apt-key add ${TMP_HOOKS_DIR}/raspbian.public.key
+
+apt-get update
+apt-get dist-upgrade -y
+
+apt-get update
+apt-get install -y raspberrypi-bootloader raspberrypi-kernel
+
+install -m 644 ${TMP_HOOKS_DIR}/config.txt /boot/
+install -m 644 ${TMP_HOOKS_DIR}/cmdline.txt /boot/
+
+install -m 644 -D ${TMP_HOOKS_DIR}/noclear.conf /etc/systemd/system/getty@tty1.service.d/noclear.conf
+
+apt-get install -y libraspberrypi-bin libraspberrypi0 raspi-config
+
+touch /spindle_install
+
+apt-get install -y raspi-copies-and-fills
+
+rm -f /spindle_install
+
+apt-get install -y apt-listchanges \
+        apt-transport-https \
+        avahi-daemon \
+        bash-completion \
+        ca-certificates \
+        console-setup \
+        crda \
+        curl \
+        debconf-utils \
+        dosfstools \
+        ed \
+        e2fsprogs \
+        fake-hwclock \
+        fbset \
+        gdb \
+        hardlink \
+        iputils-ping \
+        keyboard-configuration \
+        kpartx \
+        less \
+        libkmod2 \
+        libpam-chksshpwd \
+        libraspberrypi-dev \
+        libraspberrypi-doc \
+        manpages-dev \
+        net-tools \
+        ntp \
+        parted \
+        pi-bluetooth \
+        pkg-config \
+        psmisc \
+        python \
+        python-rpi.gpio \
+        raspberrypi-sys-mods\
+        rpi-update \
+        ssh \
+        strace \
+        sudo \
+        unzip \
+        usb-modeswitch \
+        usbutils \
+        v4l-utils \
+        vim
+
+install -m 644 -D ${TMP_HOOKS_DIR}/ttyoutput.conf /etc/systemd/system/rc-local.service.d/ttyoutput.conf
+install -m 644 ${TMP_HOOKS_DIR}/console-setup /etc/default/
+
+setupcon --force --save-only -v
+
+apt-get install -y dhcpcd5 \
+        firmware-atheros \
+        firmware-brcm80211 \
+        firmware-libertas \
+        firmware-ralink \
+        firmware-realtek \
+        raspberrypi-net-mods \
+        wireless-tools \
+        wpasupplicant
+
+install -D ${TMP_HOOKS_DIR}/wait.conf /etc/systemd/system/dhcpcd.service.d/wait.conf
+install -D ${TMP_HOOKS_DIR}/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+install -m 644 ${TMP_HOOKS_DIR}/profile /etc/profile
+

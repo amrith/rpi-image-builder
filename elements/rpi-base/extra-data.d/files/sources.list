@@ -1,0 +1,2 @@
+# sources.list configured by rpi-base element
+deb http://mirrordirector.raspbian.org/raspbian/ ${DIB_DISTRO_NAME} main contrib non-free rpi
