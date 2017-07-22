@@ -19,5 +19,14 @@
 
 if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
-apt-get install -y emacs-nox git build-essential
+TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
 
+[ -d ${TMP_HOOKS_DIR} ]
+
+_FNAME="journald.conf"
+
+[ -f ${TMP_HOOKS_DIR}/${_FNAME} ]
+
+install -m 644 ${TMP_HOOKS_DIR}/${_FNAME} /etc/systemd/journald.conf
+
+mkdir -m 755 -p /var/log/journal

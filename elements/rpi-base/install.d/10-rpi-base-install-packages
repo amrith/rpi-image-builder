@@ -19,5 +19,4 @@
 
 if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
-apt-get install -y man cron locales iproute2 ifupdown
-
+apt-get install -y man cron locales iproute2 ifupdown wget

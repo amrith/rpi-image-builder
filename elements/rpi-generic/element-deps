@@ -3,3 +3,4 @@ rpi-wifi
 rpi-secure-user
 rpi-base
 rpi-resize-root
+rpi-journald-persistence
