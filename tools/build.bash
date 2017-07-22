@@ -29,6 +29,9 @@ export RPI_SECURE_USER_NAME=$(whoami)
 export ELEMENTS_PATH=./rpi-image-builder/elements/
 export RPI_SSID="devnet7"
 export RPI_WIFI_PASSPHRASE="m3hABitHNVm6wtKCyoiNy"
+export RPI_MAKE_RPI_USER=N
+export DIB_DISTRO_NAME=stretch
+export DIB_RELEASE=stretch
 
 time disk-image-create rpi-debian-core rpi-generic -a armhf -o debian -t raw -n
 

@@ -24,7 +24,7 @@ if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
 DEFAULT_DISTRO_URL="http://mirrordirector.raspbian.org/raspbian"
 
-export DIB_DISTRO_NAME=${DIB_DISTRO_NAME:=jessie}
+export DIB_DISTRO_NAME=${DIB_DISTRO_NAME:=stretch}
 export DIB_DISTRO_URL=${DIB_DISTRO_URL:-$DEFAULT_DISTRO_URL}
 
 # disk-image-builder requires all elements providing an operating

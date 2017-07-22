@@ -10,8 +10,8 @@ Environment Variables:
 
    DIB_DISTRO_NAME:
 
-      the debian distro name, default is jessie, you can also try
-      stretch.
+      the debian distro name, default is stretch, you can also try
+      jessie.
 
    DIB_DISTRO_URL:
 
