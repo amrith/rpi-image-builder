@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# Copyright Amrith Kumar, 2017
+#
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+
+if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+
+TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
+
+[ -d ${TMP_HOOKS_DIR} ]
+
+_FNAME="vsftpd.conf"
+
+[ -f ${TMP_HOOKS_DIR}/${_FNAME} ]
+
+apt-get install -y vsftpd --install-suggests
+
+cat ${TMP_HOOKS_DIR}/${_FNAME} >> /etc/vsftpd.conf
+
+# if a FTP user is to be created, do it here.
+if [ ! -z ${RPI_FTP_USER} ]; then
+    [ ! -z ${RPI_FTP_PASSWORD} ]
+
+    # if the user already exists, we have a problem
+    lines=$(grep "^${RPI_FTP_USER}:" /etc/passwd | wc -l)
+    if [ "${lines}" != "0" ]; then
+        echo "${RPI_FTP_USER} already exists."
+        exit 1
+    fi
+
+    _FTP_SHELL='/usr/sbin/nologin'
+
+    useradd -m -s ${_FTP_SHELL} ${RPI_FTP_USER}
+
+    lines=$(grep ${_FTP_SHELL} /etc/shells | wc -l)
+    if [ "${lines}" != "0" ]; then
+        echo ${_FTP_SHELL} >> /etc/shells
+    fi
+
+    echo "${RPI_FTP_USER}:${RPI_FTP_PASSWORD}" | chpasswd
+
+    if [ -d /home/${RPI_FTP_USER} ]; then
+        chmod a-w /home/${RPI_FTP_USER}
+    fi
+fi
+
+sed -i 's/^auth[[:space:]]required[[:space:]]pam_shells.so/# auth required pam_shells.so/' /etc/pam.d/vsftpd

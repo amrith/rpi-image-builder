@@ -19,6 +19,17 @@
 
 if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
-if [ ! -z "${RPI_SSID-}" -a ! -z "${RPI_WIFI_PASSPHRASE-}" ]; then
-    echo "WiFi will be configured"
-fi
+cat >> /etc/motd <<EOF
+
+This image was built using elements from rpi-image-builder available
+online at https://github.com/amrith/rpi-image-builder. These tools
+come with ABSOLUTELY NO WARRANTY whatsoever, as stated in the
+license. You are solely responsible for determining the
+appropriateness of using, or redistributing this image, and assume any
+and all risks associated with your use or redistribution of this
+image.
+
+This image was built on $(date).
+
+EOF
+

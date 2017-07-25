@@ -19,21 +19,21 @@
 
 if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
-[ ! -z "${RPI_SSID}" ]
-[ ! -z "${RPI_WIFI_PASSPHRASE}" ]
+if [ ! -z "${RPI_SSID-}" -a ! -z "${RPI_WIFI_PASSPHRASE-}" ]; then
 
-TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
+    TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
 
-[ -d ${TMP_HOOKS_DIR} ]
+    [ -d ${TMP_HOOKS_DIR} ]
 
-_FNAME="interfaces"
+    _FNAME="wlan0"
 
-[ -f ${TMP_HOOKS_DIR}/${_FNAME} ]
+    [ -f ${TMP_HOOKS_DIR}/${_FNAME} ]
 
-PSK=$(wpa_passphrase ${RPI_SSID} ${RPI_WIFI_PASSPHRASE} | grep '[[:blank:]]psk' | cut -f 2 -d '=')
+    PSK=$(wpa_passphrase ${RPI_SSID} ${RPI_WIFI_PASSPHRASE} | grep '[[:blank:]]psk' | cut -f 2 -d '=')
 
-cat ${TMP_HOOKS_DIR}/${_FNAME} | sed "s/SSID/${RPI_SSID}/" | sed "s/PSK/${PSK}/" > /etc/network/interfaces
+    cat ${TMP_HOOKS_DIR}/${_FNAME} | sed "s/SSID/${RPI_SSID}/" | sed "s/PSK/${PSK}/" > /etc/network/interfaces.d/wlan0
 
-chmod 600 /etc/network/interfaces
+    chmod 600 /etc/network/interfaces.d/wlan0
 
-cat /etc/network/interfaces
+    systemctl disable wpa_supplicant.service
+fi
