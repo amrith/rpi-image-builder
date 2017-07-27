@@ -1,0 +1,14 @@
+#
+# noip service control file
+#
+[Unit]
+Description=noip, Dynamic DNS agent
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/noip2
+Type=forking
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
