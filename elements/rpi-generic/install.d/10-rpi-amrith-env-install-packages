@@ -19,5 +19,5 @@
 
 if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
-apt-get install -y emacs-nox git build-essential
+apt-get install -y emacs-nox git build-essential logrotate
 
