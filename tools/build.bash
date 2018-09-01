@@ -21,18 +21,18 @@
 # use. You will want to change the SSID and the WIFI passphrase,
 # they are just for illustrative purposes.
 
-unset RPI_VERBOSE
+# unset RPI_VERBOSE
 
 if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
 
 export RPI_SECURE_USER_NAME=$(whoami)
-export ELEMENTS_PATH=./rpi-image-builder/elements/
-export RPI_SSID="devnet7"
-export RPI_WIFI_PASSPHRASE="m3hABitHNVm6wtKCyoiNy"
+export ELEMENTS_PATH=./rpi-image-builder/elements
+export RPI_SSID=${RPI_SSID:-"devnet7"}
+export RPI_WIFI_PASSPHRASE=${RPI_WIFI_PASSPHRASE:-"m3hABitHNVm6wtKCyoiNy"}
 export RPI_MAKE_RPI_USER=N
 export DIB_DISTRO_NAME=stretch
 export DIB_RELEASE=stretch
 
-time disk-image-create rpi-debian-core rpi-generic -a armhf -o debian -t raw -n
+time disk-image-create -x rpi-debian-core rpi-generic -a armhf -o debian -t raw -n
 
 time disk-image-create rpi-raspbian-core rpi-generic -a armhf -o raspbian -t raw -n
