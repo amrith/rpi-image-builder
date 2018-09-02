@@ -17,7 +17,7 @@
 #    under the License.
 #
 
-if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
 
 _LDSO_DISABLED="${TARGET_ROOT}/etc/ld.so.preload.disabled"
 _LDSO="${TARGET_ROOT}/etc/ld.so.preload"

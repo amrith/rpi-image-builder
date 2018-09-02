@@ -17,6 +17,6 @@
 #    under the License.
 #
 
-if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
 
 apt-get -y install build-essential

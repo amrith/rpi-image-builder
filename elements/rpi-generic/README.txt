@@ -14,7 +14,7 @@ rpi-generic
 
       unset RPI_VERBOSE
 
-      if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+      if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
 
       export RPI_SECURE_USER_NAME=$(whoami)
       export ELEMENTS_PATH=./rpi-image-builder/elements/

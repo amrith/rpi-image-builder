@@ -34,7 +34,7 @@
 # Source: https://wiki.znc.in/Running_ZNC_as_a_system_daemon
 #
 
-if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
 
 TMP_HOOKS_DIR="/tmp/in_target.d/rpi-extradata"
 

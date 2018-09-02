@@ -17,7 +17,7 @@
 #    under the License.
 #
 
-if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
 
 # find the loopback device that dib is using for this image
 if [ -z ${TMP_IMAGE_DIR} ]; then

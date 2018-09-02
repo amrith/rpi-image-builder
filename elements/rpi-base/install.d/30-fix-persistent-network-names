@@ -17,6 +17,6 @@
 #    under the License.
 #
 
-if [ -o RPI_VERBOSE ]; then set -ex; else set -e; fi
+if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
 
 ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
