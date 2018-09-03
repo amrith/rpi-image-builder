@@ -31,8 +31,7 @@ sed 's/${DIB_DISTRO_NAME}/'${DIB_DISTRO_NAME}'/g' ${TMP_HOOKS_DIR}/raspberry-pi.
 cat /tmp/sources.list >> /etc/apt/sources.list
 cat /tmp/raspberry-pi.list >> /etc/apt/sources.list.d/raspberry-pi.list
 
-apt-get update
-apt-get install gnupg2
+apt-get install -y gnupg2
 
 apt-key add ${TMP_HOOKS_DIR}/rpi.gpg.key
 apt-key add ${TMP_HOOKS_DIR}/raspbian.public.key
