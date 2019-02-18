@@ -22,3 +22,42 @@ sudo python ./setup.py install
 Once you are done with that setup, you can follow the instructions in
 the rpi-generic element (see README.txt in that element) for a simple
 usage example.
+
+----
+
+After you have built your image, the mount.bash in tools will help you mount the SD card.
+
+For example, with lsblk I determined that the SD card was /dev/sdb
+
+First without the SD Card.
+
+root@amrith-m4800:~/source# lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 894.3G  0 disk
+├─sda1   8:1    0 862.4G  0 part /
+├─sda2   8:2    0     1K  0 part
+└─sda5   8:5    0  31.9G  0 part [SWAP]
+sr0     11:0    1  1024M  0 rom
+
+Now with the SD card.
+
+root@amrith-m4800:~/source# lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 894.3G  0 disk
+├─sda1   8:1    0 862.4G  0 part /
+├─sda2   8:2    0     1K  0 part
+└─sda5   8:5    0  31.9G  0 part [SWAP]
+sdb      8:16   1  29.7G  0 disk
+├─sdb1   8:17   1   100M  0 part /media/amrith/BOOT
+└─sdb2   8:18   1   1.9G  0 part
+sr0     11:0    1  1024M  0 rom
+
+Then mount the SD card
+
+./mount.bash /dev/sdb
+
+And copy the image onto it
+
+dd if=./debian.raw of=/dev/sdb status=progress
+
+
