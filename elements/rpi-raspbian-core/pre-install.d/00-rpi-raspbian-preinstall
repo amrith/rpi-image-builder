@@ -108,9 +108,10 @@ apt-get install -y dhcpcd5 \
         firmware-atheros \
         firmware-brcm80211 \
         firmware-libertas \
-        firmware-ralink \
         firmware-realtek \
+        firmware-misc-nonfree \
         raspberrypi-net-mods \
+        firmware-misc-nonfree \
         wireless-tools \
         wpasupplicant
 
