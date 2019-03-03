@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# Copyright Amrith Kumar, 2017
+#
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+
+if [ -n ${RPI_VERBOSE} ]; then set -ex; else set -e; fi
+
+apt-get install -y dnsmasq iptables hostapd
+systemctl disable hostapd
+systemctl disable dnsmasq
+systemctl disable wpa_supplicant.service
+
+echo >> /etc/dhcpcd.conf <<EOF
+interface wlan0
+   static ip_address=192.168.40.1/40
+   nohook wpa_supplicant
+EOF
+
+echo >> /etc/dnsmasq.conf <<EOF
+interface=wlan0
+   dhcp-range=192.168.40.2,192.168.40.250,255.255.255.0,24h
+EOF
+
+echo >> /etc/hostapd/hostapd.conf <<EOF
+interface=wlan0
+driver=nl80211
+ssid=pinet
+hw_mode=g
+channel=0
+country=US
+wpa=2
+wpa_passphrase=pinet-password
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+EOF
+
+echo >> /etc/default/hostapd <<EOF
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+EOF
+
+echo >> /etc/sysctl.conf <<EOF
+net.ipv4.ip_forward=1
+net.ipv4.conf.eth0.forwarding=1
+net.ipv4.conf.wlan0.forwarding=1
+EOF

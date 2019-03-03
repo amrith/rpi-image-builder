@@ -58,6 +58,6 @@ Then mount the SD card
 
 And copy the image onto it
 
-dd bs=1M if=./debian.raw of=/dev/sdb status=progress
+dd status=progress bs=1M if=./debian.raw of=/dev/sdb
 
 
